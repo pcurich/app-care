@@ -1,0 +1,47 @@
+<div class="card text-left">
+  <div class="card-header">
+    <h3>Usuarios</h3>  <a class="btn btn-success" style="float: right;" href="/users/new/">Nuevo Usuario</a>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+  <table class="table  table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Email</th>
+        <th scope="col">Creado en</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each users as |u|}}
+      <tr class="table-{{#if u.state}}success{{else}}danger{{/if}}">
+        <th scope="row">{{math @index "+" 1}}</th>
+        <td>{{u.name}}</td>
+        <td>{{u.email}}</td>
+        <td>{{moment u.date format="YYYY-MM-DD"}}</td>
+        <td>
+          <h5 style="color:white">
+            <span class="badge bg-{{#if u.state}}success{{else}}danger{{/if}}">
+            {{#if u.state}}Activo{{else}}Inactivo{{/if}}
+            </span>
+          </h5>
+        </td>
+        <td>
+          <h5>
+            <form action="/users/delete/{{u._id}}?_method=DELETE" method="POST">
+              <span class="btn badge badge-info"><a style="color:white" href="/users/edit/{{u._id}}">Editar</a></span>
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit" class="badge badge-danger">ELIMINAR</button>
+            </form>  
+          </h5>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="card text-left">
+  <div class="card-header">
+    <h3>Medicos</h3>  <a class="btn btn-success" style="float: right;" href="/doctors/new/">Nuevo Médico</a>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+  <table class="table  table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Especialidad</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Teléfono</th>
+        <th scope="col">Dni</th>
+        <th scope="col">Colegiatura</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each doctors as |d|}}
+      <tr class="table-{{#if d.state}}success{{else}}danger{{/if}}">
+        <th scope="row">{{math @index "+" 1}}</th>
+        <td>{{d.department}}</td>
+        <td>{{d.lastName}}, {{d.name}}</td>
+        <td>{{d.phone}}</td>
+        <td>{{d.document}}</td>
+        <td>{{d.code}}</td>
+        <td>
+          <h5 style="color:white">
+            <span class="badge bg-{{#if d.state}}success{{else}}danger{{/if}}">
+            {{#if d.state}}Activo{{else}}Inactivo{{/if}}
+            </span>
+          </h5>
+        </td>
+        <td>
+          <h5>
+            <form action="/doctors/delete/{{d._id}}?_method=DELETE" method="POST">
+              <span class="badge badge-info" style="border: 2px solid black;" ><a style="color:white" href="/doctors/edit/{{d._id}}">Editar</a></span>
+              <span class="badge badge-primary" style="border: 2px solid black;"><a style="color:white" href="/patients/{{d.userId}}">Pacientes</a></span>
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit" class="badge badge-danger">Eliminar</button>
+            </form>  
+          </h5>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+  </div>
+</div>

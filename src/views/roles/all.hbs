@@ -1,0 +1,51 @@
+<div class="card text-left">
+  <div class="card-header">
+    <h3>Roles</h3>  <a class="btn btn-success" style="float: right;" href="/roles/new/">Nuevo Rol</a>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+  <table class="table  table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Rol</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Permisos</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each roles as |r|}}
+      <tr class="table-{{#if r.state}}success{{else}}danger{{/if}}">
+        <th scope="row">{{math @index "+" 1}}</th>
+        <td>{{r.name}}</td>
+        <td>
+          <h5 style="color:white">
+            <span class="badge bg-{{#if r.state}}success{{else}}danger{{/if}}">
+            {{#if r.state}}Activo{{else}}Inactivo{{/if}}
+            </span>
+          </h5>
+        </td>
+        <td>
+          <ul style="list-style-type: none">
+          {{#each r.acl as |a|}}
+          <li><h6><span style="color:transparent" class="badge bg-{{#if a.state}}success{{else}}danger{{/if}}"> . </span>  {{a.name}}</h6></l>
+          {{/each}}  
+          </ul>
+        </td>
+        <td>
+          <h5>
+            <form action="/roles/delete/{{r._id}}?_method=DELETE" method="POST">
+              <span class="btn badge badge-info"><a style="color:white" href="/roles/edit/{{r._id}}">Editar</a></span>
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit" class="badge badge-danger">ELIMINAR</button>
+            </form>  
+          </h5>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+  </div>
+</div>

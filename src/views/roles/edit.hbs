@@ -1,0 +1,48 @@
+<form action="/roles/edit/{{rol._id}}?_method=PUT" method="POST">
+  <input type="hidden" name="_method" value="PUT">
+  <div class="card border-secondary">
+    <div class="card-header">Actualizar el rol</div>
+    <div class="card-body">
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="name" class="col-sm-6 col-form-label">Nombre</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control form-control-sm" id="name" name="name" value="{{rol.name}}" autocomplete="off" />
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="state" class="col-sm-6 col-form-label">Estado</label>
+          <div class="col-sm-6">
+            <input type="checkbox" id="state" name="state" {{#if rol.state}} checked {{/if}} />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group form-check">
+          {{#each listOfAcl as |a|}}
+          <div class="container">
+            <input type="checkbox" class="form-check-input" id="acl-{{a._id}}" name="acl" {{#if a.state}} checked {{/if}} value="{{a._id}}" />
+            <label for="acl-{{a._id}}" class="form-check-label">{{a.name}}</label>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+
+    </div>
+    <div class="card-footer">
+      <div class="form-group">
+        <button class="btn btn-primary btn-block" type="submit">Guardar</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="card">
+  <div class="card-footer">
+    <div class="form-group">
+      <a href="/roles" class="btn btn-danger btn-block" type="submit">REGRESAR</a>
+    </div>
+  </div>
+</div>

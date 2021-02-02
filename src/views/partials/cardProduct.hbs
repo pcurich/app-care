@@ -1,0 +1,57 @@
+<div class="container pt-5">
+  <div class="row">
+{{#each products }}
+<div class="col-4">
+  {{#if state}}
+  <div class="card border-success mb-3">
+    <div class="card-header">{{name}}</div>
+    <div class="card-body">
+      <h4 class="card-title">{{description}}</h4>
+      <p class="card-text">Precio: S/ {{price}} </p> 
+      <p class="card-text">Duración: {{duration}} {{sequence}}</p>
+    </div>
+    <div class="card-footer">
+      <div class="row">
+        <div class="col-6">
+          <a href="/products/edit/{{_id}}" class="btn btn-success">Editar</a>
+        </div>
+        <div class="col-6">
+          <form action="/products/delete/{{_id}}?_method=DELETE" method="POST">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger">Borrar</button>
+          </form>
+        </div> 
+      </div>
+    </div>
+  </div>
+  {{else}}
+  <div class="card border-danger mb-3">
+    <div class="card-header">{{name}}</div>
+    <div class="card-body">
+      <h4 class="card-title">{{description}}</h4>
+      <p class="card-text">Precio: S/ {{price}} </p> 
+      <p class="card-text">Duración: {{duration}} {{sequence}}</p>
+    </div>
+    <div class="card-footer">
+      <div class="row">
+        <div class="col-6">
+          <a href="/products/edit/{{_id}}" class="btn btn-success">Editar</a>
+        </div>
+        <div class="col-6">
+          <form action="/products/delete/{{_id}}?_method=DELETE" method="POST">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger">Borrar</button>
+          </form>
+        </div> 
+      </div>
+    </div>
+  </div>
+  {{/if}}
+    
+  </div>
+{{/each}}
+  </div>
+</div>
+
+
+
