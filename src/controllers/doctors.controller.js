@@ -9,8 +9,16 @@ var ObjectId = require('mongodb').ObjectID;
 
 //all-roles
 ctrl.showDoctors = async (req, res) => {
-  const doctors = await Doctor.find({deleted:false}).lean();
-  res.render('doctors/all', {doctors});
+  const user = await User.findById(req.user.id).populate("rolId").lean();
+  if (user.rolId.canDelete){
+    const doctors = await Doctor.find({deleted:false, userId: req.user.id}).lean();
+    res.render('doctors/all', {doctors});
+  }else{
+    const doctors = await Doctor.find({deleted:false}).lean();
+    res.render('doctors/all', {doctors});
+  }
+  
+  
 };
 
 //GET new
@@ -27,6 +35,7 @@ ctrl.newDoctorForm = async (req, res) => {
 //POST new
 ctrl.newDoctor = async (req, res) => {
   const { name, lastName, birthday, document, code, department, gender, address, phone, password, email, rolId, state} = req.body;
+  console.log(req.body)
   const errors = [];
   if (!name) {
     errors.push({ text: "Ingrese un nombre" });
@@ -46,7 +55,7 @@ ctrl.newDoctor = async (req, res) => {
   if (!password) {
     errors.push({ text: "Ingrese una contraseña" });
   }
-  if (!rolId) {
+  if (rolId=='0') {
     errors.push({ text: "Seleccione un rol" });
   }
   if (department == '------') {
@@ -96,7 +105,6 @@ ctrl.updateDoctorForm = async (req, res) => {
   var d = new Date(doctor.birthday);
   d.setTime( d.getTime() + d.getTimezoneOffset()*60*1000 );
   doctor.birthday = d;
-  console.log(doctor)
   const gendersDB = await Setting.find({nameSpace:"GENDER"}).lean();
   const genders= gendersDB.map(e=>{
     if (e.name == user.gender){
@@ -129,9 +137,8 @@ ctrl.updateDoctorForm = async (req, res) => {
   res.render('doctors/edit', { doctor, user, genders, departments,rols});
 };
 
-//POST edit
+//PUT edit
 ctrl.updateDoctor = async (req, res) => {
-  console.log(req.body)
   const { name, lastName, birthday, document, code, department, gender, address, phone, password, email, rolId, userId, state} = req.body;
   const errors = [];
   if (!name) {
@@ -152,7 +159,7 @@ ctrl.updateDoctor = async (req, res) => {
   if (!password) {
     errors.push({ text: "Ingrese una contraseña" });
   }
-  if (!rolId) {
+  if (rolId=='0') {
     errors.push({ text: "Seleccione un rol" });
   }
   if (department == '------') {
@@ -162,7 +169,7 @@ ctrl.updateDoctor = async (req, res) => {
     errors.push({ text: "Seleccione un genero" });
   }
   if (errors.length > 0) {
-    res.render("doctors/new", {errors, doctor:req.body});
+    res.render("doctors/edit", {errors, doctor:req.body});
   }else{
     if(state){
       await  Doctor.findByIdAndUpdate(req.params.id, { name, lastName, birthday: new Date(birthday), document, code, department, gender, address, email, phone,  updatedBy: ObjectId(req.user.id), state:true});

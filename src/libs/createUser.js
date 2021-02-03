@@ -18,20 +18,26 @@ const createAdminUser = async () => {
   const gm = new Setting({nameSpace:"GENDER", key:"1", name:"Masculino", value:"Masculino" }); await gm.save();
   const gf = new Setting({nameSpace:"GENDER", key:"2", name:"Femenino", value:"Femenino" }); await gf.save();
 
-  const s1 = new Setting({nameSpace:"ACL", key:"ACL-01", name:"Resgistrar Pacientes", value:"Resgistrar Pacientes" }); await s1.save();
+  const s1 = new Setting({nameSpace:"ACL", key:"ACL-01", name:"Pacientes", value:"patients" }); await s1.save();
   const a1 = new Acl({ rolId: ObjectId(rolAdmnin._id), settingId: ObjectId(s1._id), state: true}); await a1.save();
 
-  const s2 = new Setting({nameSpace:"ACL", key:"ACL-02", name:"Resgistrar Médicos", value:"Resgistrar Médicos" }); await s2.save();
+  const s2 = new Setting({nameSpace:"ACL", key:"ACL-02", name:"Médicos", value:"doctors" }); await s2.save();
   const a2 = new Acl({ rolId: ObjectId(rolAdmnin._id), settingId: ObjectId(s2._id), state: true}); await a2.save();
 
-  const s3 = new Setting({nameSpace:"ACL", key:"ACL-03", name:"Resgistrar Especialista", value:"Resgistrar Especialista" }); await s3.save();
+  const s3 = new Setting({nameSpace:"ACL", key:"ACL-03", name:"Especialista", value:"specialists" }); await s3.save();
   const a3 = new Acl({ rolId: ObjectId(rolAdmnin._id), settingId: ObjectId(s3._id), state: true}); await a3.save();
 
-  const s4 = new Setting({nameSpace:"ACL", key:"ACL-04", name:"Resgistrar Pacientes", value:"Resgistrar Pacientes" }); await s4.save();
+  const s4 = new Setting({nameSpace:"ACL", key:"ACL-04", name:"Configuración", value:"settings" }); await s4.save();
   const a4 = new Acl({ rolId: ObjectId(rolAdmnin._id), settingId: ObjectId(s4._id), state: true}); await a4.save();
 
-  const s5 = new Setting({nameSpace:"ACL", key:"ACL-05", name:"Resgistrar Pacientes", value:"Resgistrar Pacientes" }); await s5.save();
+  const s5 = new Setting({nameSpace:"ACL", key:"ACL-05", name:"Usuarios", value:"users" }); await s5.save();
   const a5 = new Acl({ rolId: ObjectId(rolAdmnin._id), settingId: ObjectId(s5._id), state: true}); await a5.save();
+
+  const s6 = new Setting({nameSpace:"ACL", key:"ACL-06", name:"Cultura", value:"cultures" }); await s6.save();
+  const a6 = new Acl({ rolId: ObjectId(rolAdmnin._id), settingId: ObjectId(s6._id), state: true}); await a6.save();
+
+  const s7 = new Setting({nameSpace:"ACL", key:"ACL-07", name:"Recetas", value:"recipes" }); await s7.save();
+  const a7 = new Acl({ rolId: ObjectId(rolAdmnin._id), settingId: ObjectId(s7._id), state: true}); await a7.save();
 
   const d1 = new Setting({nameSpace:"DEPARTMENT", key:"", name:"Anestesiología", value:"Anestesiología" }); await d1.save();
   const d2 = new Setting({nameSpace:"DEPARTMENT", key:"", name:"Otorrinolaringología", value:"Otorrinolaringología" }); await d2.save();
@@ -45,10 +51,10 @@ const createAdminUser = async () => {
   const d10 = new Setting({nameSpace:"DEPARTMENT", key:"", name:"Pediatría", value:"Pediatría" }); await d10.save();
 
   const acl = await Setting.find({nameSpace:"ACL"}).lean();
-  await Rol.findByIdAndUpdate(rolAdmnin._id,{ acl: JSON.stringify(acl.map( e =>{ return {name: e.name, state:true, _id:e._id }}))});
-  await Rol.findByIdAndUpdate(rolMedico._id,{ acl: JSON.stringify(acl.map( e =>{ return {name: e.name, state:false, _id:e._id }}))});
-  await Rol.findByIdAndUpdate(rolPaciente._id,{ acl: JSON.stringify(acl.map( e =>{ return {name: e.name, state:false, _id:e._id }}))});
-  await Rol.findByIdAndUpdate(rolEspecialista._id,{ acl: JSON.stringify(acl.map( e =>{ return {name: e.name, state:false, _id:e._id }}))});
+  await Rol.findByIdAndUpdate(rolAdmnin._id,{ acl: JSON.stringify(acl.map( e =>{ return {name: e.name, state:true, _id:e._id, value:e.value }}))});
+  await Rol.findByIdAndUpdate(rolMedico._id,{ acl: JSON.stringify(acl.map( e =>{ return {name: e.name, state:false, _id:e._id, value:e.value }}))});
+  await Rol.findByIdAndUpdate(rolPaciente._id,{ acl: JSON.stringify(acl.map( e =>{ return {name: e.name, state:false, _id:e._id, value:e.value }}))});
+  await Rol.findByIdAndUpdate(rolEspecialista._id,{ acl: JSON.stringify(acl.map( e =>{ return {name: e.name, state:false, _id:e._id, value:e.value }}))});
   
   acl.forEach(e =>{
     const newAcl = new Acl({rolId: rolAdmnin._id, settingId: e._id, state:false}); newAcl.save();

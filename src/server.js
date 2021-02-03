@@ -55,7 +55,6 @@ app.use(methodOverride("_method"));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false}))
 
-
 app.set('trust proxy', 1) // trust first proxy
 app.use(sessionManagement)
 app.use(passport.initialize());
@@ -71,25 +70,25 @@ app.use((req, res, next) => {
   next();
 });
 
-// routes
-app.use(require("./routes/index.routes"));
-app.use(require("./routes/users.routes"));
-app.use(require("./routes/roles.routes"));
-app.use(require("./routes/notes.routes"));
-app.use(require("./routes/doctors.routes"));
-app.use(require("./routes/patients.routes"));
-
-
-// static files
-app.use(express.static(path.join(__dirname, "public")));
-app.use(favicon(path.join(__dirname, 'public/img/', 'favicon.ico')));
-
 // General toolset
 // on request start and on request end moved after static content
 app.use(tools.onRequestStart);
 app.use(tools.onRequestEnd);
 // generate menu of the application
 app.use(tools.generateMenu);
+
+// routes
+app.use(require("./routes/index.routes"));
+app.use(require("./routes/users.routes"));
+app.use(require("./routes/roles.routes"));
+app.use(require("./routes/settings.routes"));
+app.use(require("./routes/doctors.routes"));
+app.use(require("./routes/patients.routes"));
+
+// static files
+app.use(express.static(path.join(__dirname, "public")));
+app.use(favicon(path.join(__dirname, 'public/img/', 'favicon.ico')));
+
 
 app.use((req, res) => {
   res.render("404");

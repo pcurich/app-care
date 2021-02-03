@@ -1,0 +1,41 @@
+<div class="card text-left">
+  <div class="card-header">
+    <h3>Configuraciones</h3>  <a class="btn btn-success" style="float: right;" href="/settings/new/">Nueva configuración</a>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table  table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Contexto</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Clave</th>
+            <th scope="col">Valor</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each settings as |s|}}
+          <tr>
+            <th scope="row">{{math @index "+" 1}}</th>
+            <td>{{s.nameSpace}}</td>
+            <td>{{s.name}}</td>
+            <td>{{s.key}}</td>
+            <td>{{s.value}}</td>
+            <td>
+              <h5>
+                <form action="/settings/delete/{{s._id}}?_method=DELETE" method="POST">
+                  <span class="btn badge badge-info"><a style="color:white" href="/settings/edit/{{s._id}}">Editar</a></span>
+                  <input type="hidden" name="_method" value="DELETE">
+                  <button type="submit" class="badge badge-danger">ELIMINAR</button>
+                </form>  
+              </h5>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

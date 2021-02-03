@@ -1,10 +1,113 @@
-{{!--   
-<div class="jumbotron mt-4">
-  <h1 class="display-4">Notes App Nodejs And Mongodb!</h1>
-  <p class="lead">A simple App to manage Notes developed with Nodejs, Express, Mongodb and Javascript Technologies</p>
-  <hr class="my-4">
-  <p>veniam voluptatibus aliquid unde sit Libero veniam similique ex reiciendis doloribus! Deleniti sunt cum ad est atque. Esse earum
-  </p>
-  <a class="btn btn-primary btn-lg" href="http://faztweb.com" role="button">FaztWeb</a>
-  {{user}}
-</div> --}}
+<div style="background-color: rgba(0,0,0,0.03);">
+  <nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-link active show" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="true">Perfil</a>
+    <a class="nav-link" id="nav-rol-tab" data-toggle="tab" href="#nav-rol" role="tab" aria-controls="nav-rol" aria-selected="false">Rol</a>
+    <a class="nav-link" id="nav-acl-tab" data-toggle="tab" href="#nav-acl" role="tab" aria-controls="nav-acl" aria-selected="false">Accesos</a>
+  </div>
+</nav>
+
+<div class="tab-content" id="nav-tabContent">
+  
+  <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+    <div class="card">
+      <div class="card-header"> Perfil de {{currentUser.name}} </div>
+      <div class="card-body">
+
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="name" class="col-sm-6 col-form-label">Nombre</label>
+            <div class="col-sm-10">
+              <code>{{currentUser.name}}</code>
+            </div>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="gender" class="col-sm-6 col-form-label">Género</label>
+            <div class="col-sm-10">
+              <code>{{currentUser.gender}}</code>
+            </div>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="email" class="col-sm-6 col-form-label">Email</label>
+            <div class="col-sm-10">
+              <code>{{currentUser.email}}</code>
+            </div>
+          </div>
+        </div> 
+
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="name" class="col-sm-6 col-form-label">Estado</label>
+            <div class="col-sm-10">
+              <code>{{#if currentUser.state}}Activo{{else}}Inactivo{{/if}}</code>
+            </div>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="gender" class="col-sm-6 col-form-label">Fecha</label>
+            <div class="col-sm-10">
+              <code>{{moment currentUser.date format="YYYY-MM-DD HH:mm:ss"}}</code>
+            </div>
+          </div>
+        </div> 
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-pane fade" id="nav-rol" role="tabpanel" aria-labelledby="nav-rol-tab">
+    <div class="card">
+      <div class="card-header">
+      Rol actual 
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="name" class="col-sm-6 col-form-label">Rol</label>
+            <div class="col-sm-10">
+              <code>{{currentUser.rolId.name}}</code>
+            </div>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="gender" class="col-sm-6 col-form-label">Puede modificarse</label>
+            <div class="col-sm-10">
+              <code>{{#if currentUser.rolId.canDelete}}Si{{else}}No{{/if}}</code>
+            </div>
+          </div>
+        </div> 
+        
+      </div>
+    </div>    
+  </div>
+
+  <div class="tab-pane fade" id="nav-acl" role="tabpanel" aria-labelledby="nav-acl-tab">
+    <div class="card">
+      <div class="card-header">
+      Accesos concedidos
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <table class="table  table-hover">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Acceso</th>
+                <th scope="col">Tiene Acceso?</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each currentUser.rolId.acl as |a|}}
+              <tr class="table-{{#if a.state}}success{{else}}danger{{/if}}">
+                <th scope="row">{{math @index "+" 1}}</th>
+                <td>{{a.name}}</td>
+                <td>{{#if a.state}}Si{{else}}No{{/if}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+        </div> 
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>

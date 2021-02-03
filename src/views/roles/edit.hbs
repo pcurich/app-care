@@ -23,8 +23,8 @@
         <div class="form-group form-check">
           {{#each listOfAcl as |a|}}
           <div class="container">
-            <input type="checkbox" class="form-check-input" id="acl-{{a._id}}" name="acl" {{#if a.state}} checked {{/if}} value="{{a._id}}" />
-            <label for="acl-{{a._id}}" class="form-check-label">{{a.name}}</label>
+            <input type="checkbox" class="form-check-input" id="acl-{{a.settingId}}" name="acl" {{#if a.state}} checked {{/if}} value="{{a.settingId}}" />
+            <label for="acl-{{a.settingId}}" class="form-check-label">{{a.name}}</label>
           </div>
           {{/each}}
         </div>

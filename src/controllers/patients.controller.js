@@ -95,7 +95,6 @@ ctrl.updatePatient = async (req, res) => {
     errors.push({ text: "Seleccione un genero" });
   }
   if (errors.length > 0) {
-    console.log(req.params.id)
     const patient = await Patient.findById(req.params.id).lean();
     const gendersDB = await Setting.find({nameSpace:"GENDER"}).lean();
     const genders= gendersDB.map(e=>{

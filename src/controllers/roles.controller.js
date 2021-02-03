@@ -44,7 +44,7 @@ ctrl.newRol = async (req, res) => {
     const setting = await Setting.find({nameSpace:"ACL"}).lean();
     var aclNames = [];
     setting.forEach(e =>{
-      const newAcl = new Acl({rolId: newRol._id, settingId: e._id, state:false});
+      const newAcl = new Acl({rolId: newRol._id, settingId: e._id, state:false, value: e.value});
       aclNames.push({name:e.name, state:false});
       newAcl.save();
     });
@@ -58,19 +58,43 @@ ctrl.newRol = async (req, res) => {
 
 //GET edit
 ctrl.updateRolForm = async (req, res) => {
-  const acList = await Acl.find( { rolId:req.params.id } ).populate("settingId").lean();
+  const rol = await Rol.findById(req.params.id).lean();
+  
+  //remove all old acl
+  const oldACL =  await Acl.find({ rolId: req.params.id }).lean()
+  oldACL.forEach( async e =>{ await Acl.findByIdAndDelete(e._id) });
+
+  //get new settings
+  var acList = [];
+  const arrayOfAclSetting = await Setting.find({nameSpace:'ACL'}).lean();
+  arrayOfAclSetting.forEach(e =>{
+    if (rol.canDelete){
+      const newAcl = new Acl({rolId: req.params.id, settingId: e._id, state:false, value: e.value});
+      acList.push({rolId: req.params.id, settingId: e._id, state:false, value: e.value, name:e.name })
+      newAcl.save();
+    }else{
+      const newAcl = new Acl({rolId: req.params.id, settingId: e._id, state:true, value: e.value});
+      acList.push({rolId: req.params.id, settingId: e._id, state:true, value: e.value, name:e.name })
+      newAcl.save();
+    }
+  });
+  
   console.log(acList)
-  const aclStr = acList.map( e =>{ return { name: e.settingId.name, state:e.state, _id:e._id }});
-  const rol = await Rol.findByIdAndUpdate(req.params.id, {updatedBy: ObjectId(req.user.id), acl: JSON.stringify(aclStr)});
+
+  const newRol = await Rol.findByIdAndUpdate(req.params.id, {updatedBy: ObjectId(req.user.id), acl: JSON.stringify(acList)});
+
   if(rol.canDelete){
-    res.render('roles/edit', { rol, listOfAcl:aclStr });
+    // const aclStr = acList.map( e =>{ return { _id: e._id, name: e.settingId.name, state: e.state, value: e.value }});
+    console.log("newRol")
+    console.log(newRol)
+    res.render('roles/edit', { rol, listOfAcl:acList });
   }else{
     req.flash("error_msg", "No se puede actualizar este rol");
     res.redirect("/roles");
   }
 };
 
-//POST edit
+//PUT edit
 ctrl.updateRol = async (req, res,next) => {
   const {name, state, acl} = req.body;
   const errors = [];
@@ -80,7 +104,7 @@ ctrl.updateRol = async (req, res,next) => {
   }
 
   if (errors.length > 0) {
-    res.render("roles/new", {errors,name});
+    res.render("roles/edit", { errors, name });
   }else{
     const dbAcl = await Acl.find( { rolId:req.params.id } ).lean();
     const dbRol = await Rol.findById( req.params.id ).lean();
@@ -99,14 +123,14 @@ ctrl.updateRol = async (req, res,next) => {
       
       if (Array.isArray(acl)){
         acl.forEach(async e=>{
-          await Acl.findByIdAndUpdate(e, {state:true})
+          await Acl.findOneAndUpdate({settingId:e, rolId:req.params.id}, {state:true})
         });
       }else{
-        await Acl.findByIdAndUpdate(acl, {state:true});
+        await Acl.findOneAndUpdate({settingId:acl, rolId:req.params.id}, {state:true});
       }
 
       const acList = await Acl.find( { rolId:req.params.id } ).populate("settingId").lean();
-      const aclStr = acList.map( e =>{ return { name: e.settingId.name, state:e.state, _id:e._id }});
+      const aclStr = acList.map( e =>{ return { name: e.settingId.name, state:e.state, _id:e._id, value:e.settingId.value }});
       await Rol.findByIdAndUpdate(req.params.id, {updatedBy: ObjectId(req.user.id), acl: JSON.stringify(aclStr)});
 
       req.flash("success_msg", "Rol actualizado correctamente");

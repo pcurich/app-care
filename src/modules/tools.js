@@ -31,18 +31,10 @@ exports.onRequestEnd = function(req, res, next) {
 }
 
 exports.generateMenu = async (req, res, next) => {
-  var menuItems = [{
-          label: 'Home',
-          href: '/'
-      }, {
-          label: 'My profile',
-          href: '/user'
-      }
-  ]
-  const rol = await Rol.findById(req.user.rolId).lean()
-  res.locals.menuItems = rol.acl;
-  console.log("acl")
-  console.log(rol.acl)
+  if(req.user){
+    const rol = await Rol.findById(req.user.rolId).lean()
+    res.locals.menuItems = JSON.parse(rol.acl);
+  }  
   next();
 };
 

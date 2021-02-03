@@ -5,6 +5,10 @@ const SettingSchema = new Schema({
   name:      { type: String },
   key:       { type: String },
   value:     { type: String }
+},{
+  timestamps: true
+},{
+  collection: 'settings'
 });
 
 module.exports = model("Setting", SettingSchema);

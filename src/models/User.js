@@ -10,6 +10,10 @@ const UserSchema = new Schema({
   rolId:    { type: Schema.Types.ObjectId, ref: 'Rol'},
   state:    { type: Boolean, default: true },
   date:     { type: Date, default: Date.now },
+},{
+  timestamps: true
+},{
+  collection: 'users'
 });
 
 UserSchema.methods.encryptPassword = async (password) => {

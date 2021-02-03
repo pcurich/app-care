@@ -25,7 +25,6 @@ ctrl.newUserForm = async (req, res) => {
 //POST new
 ctrl.newUser = async (req, res) => {
   const { name, email, password, gender, rolId } = req.body;
-  console.log(req.body)
   let errors = [];  
   if (password.length < 4) {
     errors.push({ text: "La contraseña debe tener almenos 4 caracteres." });
@@ -117,7 +116,7 @@ ctrl.updateUser = async (req, res) => {
     const genders = await Setting.find({nameSpace:"GENDER"}).lean();
     genders.unshift({key:'------', name:'------'});
 
-    const rols = await Rol.find({canDelete:true}).lean();
+    const rols = await Rol.find({canDelete:true, state:true}).lean();
     rols.unshift({_id:'0', name:'------'});
     
     res.render("users/edit", { errors, newUser: req.body, genders, rols });
@@ -131,7 +130,6 @@ ctrl.updateUser = async (req, res) => {
       } else {
         var t = new User()
         const pass = await t.encryptPassword(password);
-        console.log(pass)
         if (state){
           await User.findByIdAndUpdate( req.params.id, { name, email, password: pass, gender, rolId:ObjectId(rolId), state:true });
         }else{
@@ -164,7 +162,7 @@ ctrl.deleteUser = async (req, res) => {
 ctrl.signUpForm = async (req, res) => {
   const genders = await Setting.find({nameSpace:"GENDER"}).lean();
   genders.unshift({key:'------', name:'------'});
-  const rols = await Rol.find({canDelete:true}).lean();
+  const rols = await Rol.find({canDelete:true, state:true}).lean();
   rols.unshift({_id:'0', name:'------'});
   res.render('users/signup', { genders, rols });
 };
@@ -172,7 +170,6 @@ ctrl.signUpForm = async (req, res) => {
 //POST /users/signup
 ctrl.singUp = async (req, res) => {
   const { name, email, password, confirm_password, gender, rolId } = req.body;
-  console.log(req.body)
   let errors = [];  
   if (password != confirm_password) {
     errors.push({ text: "No coincide la contraseña" });
@@ -212,7 +209,7 @@ ctrl.signInForm = (req, res) => {
 };
 
 ctrl.signin = passport.authenticate("local", {
-    successRedirect: "/customers",
+    successRedirect: "/",
     failureRedirect: "/users/signin",
     failureFlash: true,
     successFlash: 'Bienvenido'

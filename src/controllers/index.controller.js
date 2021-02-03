@@ -1,11 +1,20 @@
-const indexCtrl = {};
+const ctrl = {};
 
-indexCtrl.renderIndex = (req, res) => {
-  res.render('index');
+const User = require("../models/User");
+
+ctrl.renderIndex = async (req, res) => {
+  if(req.user)
+  {
+    const user = await User.findById(req.user.id).populate('rolId').lean();
+    user.rolId.acl = JSON.parse(user.rolId.acl);
+    res.render('index',{currentUser:user});
+  }else{
+    res.redirect("/users/signin");
+  }
 };
 
-indexCtrl.renderAbout = (req, res) => {
+ctrl.renderAbout = (req, res) => {
   res.render('about');
 };
 
-module.exports = indexCtrl;
+module.exports = ctrl;
