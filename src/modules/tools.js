@@ -49,3 +49,11 @@ adjustMenuClass = (menuItems, pathname) => {
       }
   }
 }
+
+//https://handyman.dulare.com/session-management-in-express/
+//https://handyman.dulare.com/handlebars-express-basics/
+//https://handyman.dulare.com/multi-level-menu-in-express/
+//https://handyman.dulare.com/passing-variables-through-express-middleware/
+//https://github.com/pdulak/friendlyTracker
+//https://expressjs.com/es/advanced/best-practice-security.html
+//http://rocketseriesypeliculas.blogspot.com/2019/04/game-of-thrones.html
