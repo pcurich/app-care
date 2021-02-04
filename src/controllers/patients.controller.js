@@ -8,9 +8,21 @@ var ObjectId = require('mongodb').ObjectID;
 
 //all-patients
 ctrl.showPatients = async (req, res) => {
-  const doctor = await Doctor.findOne({ userId: (req.params.userId)}).lean();
-  const patients = await Patient.find({ userId: (req.params.userId)}).lean();
-  res.render('patients/all', { doctor, patients });
+  var id = undefined;
+  if (req.params.userId != '0'){
+    id = req.params.userId
+  }else{
+    id = req.user.id;
+  }
+  const doctor = await Doctor.findOne({ userId: id }).lean();
+  if(!doctor){
+    req.flash("error_msg", "No se ha identificado como un doctor .");
+    res.redirect("/")
+  }else{
+    const patients = await Patient.find({ userId: id }).lean();
+    res.render('patients/all', { doctor, patients });
+  }
+  
 };
 
 //GET new-patient

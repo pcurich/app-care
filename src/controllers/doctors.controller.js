@@ -10,6 +10,7 @@ var ObjectId = require('mongodb').ObjectID;
 //all-roles
 ctrl.showDoctors = async (req, res) => {
   const user = await User.findById(req.user.id).populate("rolId").lean();
+  console.log(user)
   if (user.rolId.canDelete){
     const doctors = await Doctor.find({deleted:false, userId: req.user.id}).lean();
     res.render('doctors/all', {doctors});
@@ -74,10 +75,10 @@ ctrl.newDoctor = async (req, res) => {
       newDoctor.state = false;
     }
     
-    const emailUser = await User.findOne({ email });
+    const emailUser = await User.findOne({ email }).lean();
     if(!emailUser){
       
-      const newUser = new User({ name, email, password, gender, rolId:ObjectId(rolId) });
+      const newUser = new User({ name, email, gender, rolId:ObjectId(rolId) });
       newUser.password = await newUser.encryptPassword(password);
       await newUser.save();
 
@@ -86,8 +87,9 @@ ctrl.newDoctor = async (req, res) => {
       req.flash("success_msg", "Registro creado satisfactoriamente.");
 
     }else{
-      
-      await User.findOneAndUpdate({ email }, { name, password, gender, rolId:ObjectId(rolId) });
+      var t = new User();
+      var pwd = await t.encryptPassword(password);
+      await User.findOneAndUpdate({ email }, { name, password:pwd, gender, rolId:ObjectId(rolId) });
 
       newDoctor.userId = ObjectId(emailUser._id);
       await newDoctor.save();
