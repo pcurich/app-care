@@ -8,15 +8,14 @@ const handlebars = require("handlebars");
 const methodOverride = require("method-override");
 const flash = require("connect-flash");
 const passport = require("passport");
-const morgan = require("morgan");
 const helmet = require("helmet");
-const bodyParser = require('body-parser')
 
 const { createAdminUser } = require("./libs/createUser");
 const { json, select, compare, math } = require("./helpers/handlebars");
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 var tools = require('./modules/tools');
 var sessionManagement = require('./modules/sessionManagement');
+const accessLogStream = require("./middleware/log")
 
 // Initializations
 const app = express();
@@ -49,11 +48,9 @@ app.set("view engine", ".hbs");
 
 // middlewares
 app.use(helmet());
-app.use(morgan(process.env.NODE_ENV));
+app.use(accessLogStream); 
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false}))
 
 app.set('trust proxy', 1) // trust first proxy
 app.use(sessionManagement)

@@ -79,14 +79,10 @@ ctrl.updateRolForm = async (req, res) => {
     }
   });
   
-  console.log(acList)
-
   const newRol = await Rol.findByIdAndUpdate(req.params.id, {updatedBy: ObjectId(req.user.id), acl: JSON.stringify(acList)});
 
   if(rol.canDelete){
     // const aclStr = acList.map( e =>{ return { _id: e._id, name: e.settingId.name, state: e.state, value: e.value }});
-    console.log("newRol")
-    console.log(newRol)
     res.render('roles/edit', { rol, listOfAcl:acList });
   }else{
     req.flash("error_msg", "No se puede actualizar este rol");

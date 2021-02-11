@@ -10,7 +10,6 @@ var ObjectId = require('mongodb').ObjectID;
 //all-roles
 ctrl.showDoctors = async (req, res) => {
   const user = await User.findById(req.user.id).populate("rolId").lean();
-  console.log(user)
   if (user.rolId.canDelete){
     const doctors = await Doctor.find({deleted:false, userId: req.user.id}).lean();
     res.render('doctors/all', {doctors});
@@ -36,7 +35,6 @@ ctrl.newDoctorForm = async (req, res) => {
 //POST new
 ctrl.newDoctor = async (req, res) => {
   const { name, lastName, birthday, document, code, department, gender, address, phone, password, email, rolId, state} = req.body;
-  console.log(req.body)
   const errors = [];
   if (!name) {
     errors.push({ text: "Ingrese un nombre" });
